@@ -1,0 +1,13 @@
+## Raw Data: Requirements
+
+this file contains only raw data with these extensions:
+.html-files 
+.txt-files (text files) = URL-list
+
+
+--------------------------------------------------------------------
+
+weblinks: 
+
+
+

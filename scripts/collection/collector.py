@@ -17,7 +17,7 @@ import requests
 class DataCollector(ABC):
     # Initialise attributes for collecting data
     def __init__(self, folder: str):
-        self.path = "C:\Development\Projects\MachineLearning\Mobile-Image_Classifier-System"
+        self.path = "C:\Development\Projects\MachineLearning\Mobile-Image_Classifier-System\data"
         self.folder_path = os.path.join(self.path, folder)
         # self.source_folder = "data"
 
@@ -70,6 +70,23 @@ class DataLoader:
             filename_path = os.path.join(sel_folder, csv_filename)
             return filename_path
 
+# Implement WebCollector class 
+class WebCollector(DataCollector):
+    def __init__(self, folder: str, weblinks: list):
+        super().__init__(folder)
+        self.weblinks = weblinks
+
+    # Method 1: collect weblinks 
+    def collect(self, filename: str):
+        # Create a filename 
+        weblink_file = os.path.join(self.folder_path, filename)
+
+        # Create a textfile with weblinks 
+        with open(weblink_file, "w") as textfile:
+            for weblink in self.weblinks:
+                textfile.writelines(weblink + "\n")
+        print(f"Sucessfully collected {len(self.weblinks)} webpages")
+
 
 # Implement ImageCollector class
 class ImageCollector(DataCollector):
@@ -115,7 +132,29 @@ class ImageCollector(DataCollector):
 
 # Implement LabelCollector class
 class LabelCollector(DataCollector):
-    pass
+    # Method: collect labels and store into a dataset
+    def collect(self, labels: int, filename: str) -> pd.DataFrame:
+        # Create a label dataset
+        label_ds = pd.DataFrame()
+        label_ds["Labels"] = labels
+
+        # Save label dataset in existing folder 
+        labels_data_folder = "label_dataset"
+        label_folder_path = os.path.join(self.folder_path, labels_data_folder)
+        
+        # Check if path exists
+        if not os.path.exists(label_folder_path):
+            os.makedirs(label_folder_path, exist_ok=True)
+
+        # Save label dataset
+        label_file_path = os.path.join(label_folder_path, f"{filename}.csv")
+        label_ds.to_csv(label_file_path)
+
+        return label_ds
+    
+    # # Constructor: send a message (later)
+    # def detect_num_labels(extractor: object) -> str:
+    #     labels = extractor.extract()
 
 # Implement ProductTAbleCollector class
 class ProductTableCollector(DataCollector):

@@ -26,7 +26,7 @@ class Extractor(ABC):
         pass
 
 # Implement ImageExtractor class
-class ImageExtractor:
+class ImageExtractor(Extractor):
     # Method 1: Extract images from dynamic webpage  
     def extract(self, weblink: str) -> list:
         # Set up options 
@@ -51,9 +51,33 @@ class ImageExtractor:
         return image_urls
     
 # Implement LabelExtractor class
-class LabelExtractor:
-    pass 
+class LabelExtractor(Extractor):
+    # Extract dataset into a 
+    def extract(self, weblink: str) -> list:
+        # Set up options 
+        options = Options()
+        options.add_argument("--disable-popup-blocking")
+        options.add_argument("--disable-notifications")
 
-# Implement Paginisor class
-class Paginisor:
+        # Set up driver including options 
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        driver.get(weblink)
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+        time.sleep(5)
+
+        # Extract images from website 
+        product_titles = driver.find_elements(By.CSS_SELECTOR, "div.product-name h5 a")
+        labels = [title.text for title in product_titles]
+
+        # Number of labels
+        num_labels = len(labels)
+        print(f"Extract {num_labels} labels from {weblink}")
+        # Quit the driver 
+        driver.quit()
+
+        return labels
+
+# Example code 
+if __name__ == "__main__":
     pass 
